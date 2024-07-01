@@ -3,8 +3,15 @@ Switch between git worktrees with speed. :zap:
 
 <img src = "https://i.imgur.com/nPdneDT.gif" width="600" alt="demo of switching between git worktrees" />
 
+## This fork includes:
+
+- Fish completions work dinamically.
+- New `names` subcommand, that shows the registered worktree names.
+- Completions work with spaces & special characters.
+- Doesn't create a new shell instance when changing directory.
+
 ## Installation
-Download the script from the [Release section](https://github.com/yankeexe/git-worktree-switcher/releases).
+Download the script from the [Release section](https://github.com/mateusauler/git-worktree-switcher/releases).
 
 Make the script executable.
 

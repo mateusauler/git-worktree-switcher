@@ -4,12 +4,12 @@ set -e
 # Switch between git worktrees with speed.
 
 args=("$@")
-VERSION="0.1.1"
+VERSION="0.2.0-fork"
 TMP_PATH=$(mktemp)
 BINARY_PATH=$(which wt)
 JQ_URL="https://stedolan.github.io/jq/download"
-RELEASE_URL="https://github.com/yankeexe/git-worktree-switcher/releases/latest"
-RELEASE_API_URL="https://api.github.com/repos/yankeexe/git-worktree-switcher/releases/latest"
+RELEASE_URL="https://github.com/mateusauler/git-worktree-switcher/releases/latest"
+RELEASE_API_URL="https://api.github.com/repos/mateusauler/git-worktree-switcher/releases/latest"
 CHANGE_DIRECTORY_PREFIX="changedir:"
 
 
