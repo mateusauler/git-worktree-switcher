@@ -193,33 +193,32 @@ if echo "${args[@]}" | grep -v update &> /dev/null; then
 	auto_check_update
 fi
 
-if [ -z "${args[0]}" ]; then
+case "${args[0]}" in
+list)
+	worktree_list
+	;;
+names)
+	worktree_list_names
+	;;
+update)
+	update
+	;;
+help)
+	help_message
+	;;
+version)
+	echo Version: $VERSION
+	;;
+init)
+	init
+	;;
+'')
 	goto_main_worktree
-else
-	case "${args[0]}" in
-	list)
-		worktree_list
-		;;
-	names)
-		worktree_list_names
-		;;
-	update)
-		update
-		;;
-	help)
-		help_message
-		;;
-	version)
-		echo Version: $VERSION
-		;;
-	init)
-		init
-		;;
-	*)
-		directory=$(git worktree list --porcelain | grep -E 'worktree ' | awk '/'"$arg"'/ {print; exit}' | cut -d ' ' -f2-)
-		;;
-	esac
-fi
+	;;
+*)
+	directory=$(git worktree list --porcelain | grep -E 'worktree ' | awk '/'"$arg"'/ {print; exit}' | cut -d ' ' -f2-)
+	;;
+esac
 
 # If directory variable is not empty then change worktree
 if [ -z "$directory" ]; then
