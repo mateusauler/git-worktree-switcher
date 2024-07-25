@@ -97,7 +97,7 @@ check_and_cache_update() {
 
 	echo "$fetched_tag_name"
 
-	# update checked file
+	mkdir -p "$(dirname "$VERSION_CACHE_FILE")"
 cat > "$VERSION_CACHE_FILE" <<EOF
 {
 	"timestamp": "$(date +%s)",
