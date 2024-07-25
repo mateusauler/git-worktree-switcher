@@ -9,6 +9,8 @@ Switch between git worktrees with speed. :zap:
 - New `names` subcommand, that shows the registered worktree names.
 - Completions work with spaces & special characters.
 - Doesn't create a new shell instance when changing directory.
+- Running `wt`, instead of `wt -`, goes to the main worktree (similar to how `cd` itself works).
+- Checks for updates automatically once per day on the first invocation.
 
 ## Installation
 Download the script from the [Release section](https://github.com/mateusauler/git-worktree-switcher/releases).
