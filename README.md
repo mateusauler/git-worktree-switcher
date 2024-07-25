@@ -92,13 +92,19 @@ $ wt <worktree-name/search-term>
 Go to root worktree directory
 
 ```bash
-$ wt -
+$ wt
 ```
 
 List out all the worktrees.
 
 ```bash
 $ wt list
+```
+
+List out all the worktree names.
+
+```bash
+$ wt names
 ```
 
 Show help message
