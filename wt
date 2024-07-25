@@ -7,6 +7,7 @@ args=("$@")
 VERSION="0.2.0-fork"
 TMP_PATH=$(mktemp)
 BINARY_PATH=$(which wt)
+VERSION_CACHE_FILE=${XDG_CACHE_HOME:-$HOME/.cache}/wt_latest_update_check.json
 JQ_URL="https://stedolan.github.io/jq/download"
 RELEASE_URL="https://github.com/mateusauler/git-worktree-switcher/releases/latest"
 RELEASE_API_URL="https://api.github.com/repos/mateusauler/git-worktree-switcher/releases/latest"
@@ -67,7 +68,7 @@ download_latest_update() {
 }
 
 check_release_version() {
-	fetched_tag_name=$(curl -sL $RELEASE_API_URL | jq -r '.tag_name')
+	fetched_tag_name=$(check_and_cache_update)
 
 	if [ "$fetched_tag_name" == $VERSION ]; then
 		echo "You have the latest version of worktree switcher!"
@@ -85,6 +86,44 @@ update() {
 	else
 		check_release_version
 	fi
+}
+
+auto_check_update() {
+	show_updates() {
+		if [[ "$1" != "$VERSION" ]]; then
+			echo "Version $1 available! Run 'wt update' to update." 1>&2
+			echo "Currently running version $VERSION." 1>&2
+		fi
+	}
+
+	if [[ -f "$VERSION_CACHE_FILE" ]]; then
+		check_timestamp=$(jq -r '.timestamp' < "$VERSION_CACHE_FILE")
+		latest_known_version=$(jq -r '.version' < "$VERSION_CACHE_FILE")
+		one_day_ago_epoch=$(date -d '1 days ago' +%s)
+
+		if (( check_timestamp > one_day_ago_epoch )); then
+			show_updates "$latest_known_version"
+			return 0
+		fi
+	fi
+
+	fetched_tag_name=$(check_and_cache_update)
+	show_updates "$fetched_tag_name"
+}
+
+check_and_cache_update() {
+	echo "Checking for updates..." 1>&2
+	fetched_tag_name=$(curl -sL $RELEASE_API_URL | jq -r '.tag_name')
+
+	echo "$fetched_tag_name"
+
+	# update checked file
+cat > "$VERSION_CACHE_FILE" <<EOF
+{
+	"timestamp": "$(date +%s)",
+	"version": "$fetched_tag_name"
+}
+EOF
 }
 
 init_bash() {
@@ -149,6 +188,10 @@ init() {
 		;;
 	esac
 }
+
+if echo "${args[@]}" | grep -v update &> /dev/null; then
+	auto_check_update
+fi
 
 if [ -z "${args[0]}" ]; then
 	goto_main_worktree
