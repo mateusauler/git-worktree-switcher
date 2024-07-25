@@ -6,7 +6,7 @@ Switch between git worktrees with speed. :zap:
 ## This fork includes:
 
 - Fish completions work dinamically.
-- New `names` subcommand, that shows the registered worktree names.
+- The `list` subcommand is now `names`, which lists out only the worktree basenames.
 - Completions work with spaces & special characters.
 - Doesn't create a new shell instance when changing directory.
 - Running `wt`, instead of `wt -`, goes to the main worktree (similar to how `cd` itself works).
@@ -93,12 +93,6 @@ Go to root worktree directory
 
 ```bash
 $ wt
-```
-
-List out all the worktrees.
-
-```bash
-$ wt list
 ```
 
 List out all the worktree names.

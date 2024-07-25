@@ -17,11 +17,6 @@ CHANGE_DIRECTORY_PREFIX="changedir:"
 # Escape forward slash
 arg=${args[0]/\//\\\/}
 
-# show worktree list
-worktree_list() {
-	git worktree list
-}
-
 worktree_list_names() {
 	if git rev-parse --git-dir &> /dev/null; then
 		git worktree list --porcelain \
@@ -35,7 +30,6 @@ help_message() {
 	echo "Usage:"
 	echo -e "\twt: go to the main worktree"
 	echo -e "\twt <worktree-name>: search for worktree names and change to that directory."
-	echo -e "\twt list: list out all the git worktrees."
 	echo -e "\twt names: list out only the git worktree names."
 	echo -e "\twt update: update to the latest release of worktree switcher."
 	echo -e "\twt version: show the CLI version."
@@ -184,9 +178,6 @@ if echo "${args[@]}" | grep -v update &> /dev/null; then
 fi
 
 case "${args[0]}" in
-list)
-	worktree_list
-	;;
 names)
 	worktree_list_names
 	;;
