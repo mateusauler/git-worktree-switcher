@@ -18,11 +18,7 @@ CHANGE_DIRECTORY_PREFIX="changedir:"
 arg=${args[0]/\//\\\/}
 
 worktree_list_names() {
-	if git rev-parse --git-dir &> /dev/null; then
-		git worktree list --porcelain \
-			| awk '/^worktree / { sub("worktree ", ""); print; }' \
-			| xargs -I{} basename {}
-	fi
+	git worktree list --porcelain | sed -n 's/^worktree\s*//p' | xargs -r -I{} basename {}
 }
 
 help_message() {
@@ -184,7 +180,7 @@ init)
 	init
 	;;
 *)
-	directory=$(git worktree list --porcelain | grep -E 'worktree ' | awk '/'"$arg"'/ {print; exit}' | cut -d ' ' -f2-)
+	directory=$(git worktree list --porcelain | sed -n '/'"${arg:-.}"'/{s/^worktree\s*//p;q}')
 	;;
 esac
 
