@@ -15,7 +15,7 @@ CHANGE_DIRECTORY_PREFIX="changedir:"
 
 
 # Escape forward slash
-arg=$(echo "${args[0]}" | sed 's/\//\\\//g')
+arg=${args[0]/\//\\\/}
 
 # show worktree list
 worktree_list() {
