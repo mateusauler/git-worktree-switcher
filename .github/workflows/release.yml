@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*.*.*-fork"
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: true
+
+      - name: Test version
+        run: |
+          version=$(./wt version 2> /dev/null | sed 's/Version: //')
+          tag=$(echo ${{ github.ref }} | sed 's|^refs/tags/||')
+          [[ $tag == $version ]]
+
+      - name: Changelog
+        id: changelog
+        run: |
+          {
+            echo 'changelog<<EOF'
+
+            echo 'Commits since last release:'
+
+            git log --pretty=format:'%D' \
+              | sed -nE '/tag:/{s/^(.+, )?tag: ([0-9\.\]+(-fork)?)(,.*)?$/\2/;p}' \
+              | head -2 \
+              | tac \
+              | xargs printf "%s..%s" \
+              | xargs git log --format="- %h %s"
+
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2.0.8
+        with:
+          body: ${{ steps.changelog.outputs.changelog }}
+          files: |
+            wt
+            completions/*
