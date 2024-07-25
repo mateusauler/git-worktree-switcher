@@ -6,7 +6,7 @@ set -e
 args=("$@")
 VERSION="0.2.1-fork"
 TMP_PATH=$(mktemp)
-BINARY_PATH=$(which wt)
+BINARY_PATH=$(realpath "$0")
 VERSION_CACHE_FILE=${XDG_CACHE_HOME:-$HOME/.cache}/wt_latest_update_check.json
 JQ_URL="https://stedolan.github.io/jq/download"
 RELEASE_URL="https://github.com/mateusauler/git-worktree-switcher/releases/latest"
@@ -126,24 +126,19 @@ cat > "$VERSION_CACHE_FILE" <<EOF
 EOF
 }
 
+get_dest_path="\$(echo \"\$result\" | awk '/^$CHANGE_DIRECTORY_PREFIX.*/ {sub(\"$CHANGE_DIRECTORY_PREFIX\", \"\"); print; exit}')"
+
 init_bash() {
 	cat <<EOF
 wt() {
-	if ! command -v wt &> /dev/null; then
-		echo 'wt was not found in your \$PATH'
-		return 1
-	fi
-
-	result="\$(command wt "\$@")"
-	dest_path="\$(echo "\$result" | awk '/^$CHANGE_DIRECTORY_PREFIX.*/ {sub("$CHANGE_DIRECTORY_PREFIX", ""); print; exit}')"
+	result="\$($BINARY_PATH "\$@")"
+	dest_path="$get_dest_path"
 
 	if [[ -n "\$dest_path" ]]; then
 		cd "\$dest_path" || return
 	elif [[ -n \$result ]]; then
 		echo "\$result"
 	fi
-
-	return 0
 }
 EOF
 }
@@ -151,13 +146,8 @@ EOF
 init_fish() {
 	cat <<EOF
 function wt
-	if ! command -q wt
-		echo 'wt was not found in your \$PATH'
-		return 1
-	end
-
-	set -l result "\$(command wt \$argv)"
-	set -l dest_path "\$(echo "\$result" | awk '/^$CHANGE_DIRECTORY_PREFIX.*/ {sub("$CHANGE_DIRECTORY_PREFIX", ""); print; exit}')"
+	set -l result "\$($BINARY_PATH \$argv)"
+	set -l dest_path "$get_dest_path"
 
 	if test -n "\$dest_path"
 		cd "\$dest_path"
