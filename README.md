@@ -31,7 +31,7 @@ $ sudo cp wt /usr/local/bin
 
 **For Bash**
 ```bash
-sudo cp completions/wt_completion /etc/bash_completion.d
+sudo cp wt_completion /etc/bash_completion.d
 ```
 
 Add this to the end of your `~/.bashrc`:
@@ -51,7 +51,7 @@ print -rl -- $fpath
 Copy completion script to one of that location and restart the shell.
 
 ```bash
-sudo cp completions/_wt_completion <one-of-$fpath>
+sudo cp _wt_completion <one-of-$fpath>
 
 exec zsh
 ```
@@ -63,7 +63,7 @@ eval "$(command wt init zsh)"
 
 **For Fish**
 ```bash
-cp completions/wt.fish ~/.config/fish/completions
+cp wt.fish ~/.config/fish/completions
 ```
 
 Add this to the end of your `~/.config/fish/config.fish`:
