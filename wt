@@ -159,10 +159,6 @@ init() {
 	esac
 }
 
-if echo "${args[@]}" | grep -v update &> /dev/null; then
-	auto_check_update
-fi
-
 case "${args[0]}" in
 names)
 	worktree_list_names
@@ -180,6 +176,7 @@ init)
 	init
 	;;
 *)
+	auto_check_update
 	directory=$(git worktree list --porcelain | sed -n '/'"${arg:-.}"'/{s/^worktree\s*//p;q}')
 	;;
 esac
