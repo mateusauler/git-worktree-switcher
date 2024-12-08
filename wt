@@ -18,7 +18,7 @@ CHANGE_DIRECTORY_PREFIX="changedir:"
 arg=${args[0]/\//\\\/}
 
 worktree_list_names() {
-	git worktree list --porcelain | sed -n 's/^worktree\s*//p' | xargs -r -I{} basename {}
+	git worktree list --porcelain 2> /dev/null | sed -n 's/^worktree\s*//p' | xargs -r -I{} basename {}
 }
 
 help_message() {
@@ -177,7 +177,7 @@ init)
 	;;
 *)
 	auto_check_update
-	directory=$(git worktree list --porcelain | sed -n '/'"${arg:-.}"'/{s/^worktree\s*//p;q}')
+	directory=$(git worktree list --porcelain 2> /dev/null | sed -n '/'"${arg:-.}"'/{s/^worktree\s*//p;q}')
 	;;
 esac
 
