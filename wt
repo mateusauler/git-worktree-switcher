@@ -4,7 +4,7 @@ set -e
 # Switch between git worktrees with speed.
 
 args=("$@")
-VERSION="0.2.4-fork"
+VERSION="0.2.5-fork"
 TMP_PATH=$(mktemp)
 BINARY_PATH=$(realpath "$0")
 VERSION_CACHE_FILE=${XDG_CACHE_HOME:-$HOME/.cache}/wt_latest_update_check.json
