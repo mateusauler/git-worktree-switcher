@@ -21,7 +21,8 @@ worktree_list_names() {
 	if git rev-parse --git-dir &> /dev/null; then
 		git worktree list --porcelain \
 			| awk '/^worktree / { sub("worktree ", ""); print; }' \
-			| xargs -L 1 basename
+			| tr \\n \\0 \
+			| xargs -0 -L 1 basename
 	fi
 }
 
