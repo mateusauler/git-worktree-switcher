@@ -165,7 +165,7 @@ init() {
 }
 
 case "${args[0]}" in
-names)
+names|list)
 	worktree_list_names
 	;;
 update)
