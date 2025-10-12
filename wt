@@ -164,9 +164,14 @@ init() {
 }
 
 case "${args[0]}" in
-names)
+list)
 	worktree_list_names
 	;;
+names)
+  worktree_list_names
+  echo -e '\033[0;31mThe '\''names'\'' option is deprecated and will be removed in future versions.\033[0m' >&2
+  echo -e '\033[0;31mUse '\''list'\'' instead.\033[0m' >&2
+  ;;
 update)
 	update
 	;;
