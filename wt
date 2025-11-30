@@ -16,6 +16,20 @@ CHANGE_DIRECTORY_PREFIX="changedir:"
 
 # Escape forward slash
 arg=${args[0]/\//\\\/}
+is_interactive=false
+
+for arg in "${args[@]}"; do
+	if [[ "$arg" == "-i" ]]; then
+		if command -v fzf &> /dev/null
+		then is_interactive=true
+		else
+			echo "Error: fzf is not installed for interactive mode"
+			echo "Install from: https://github.com/junegunn/fzf#installation"
+			exit 1
+		fi
+	break
+	fi
+done
 
 worktree_list_names() {
 	if git rev-parse --git-dir &> /dev/null; then
@@ -31,6 +45,8 @@ help_message() {
 	echo "Usage:"
 	echo -e "\twt: go to the main worktree"
 	echo -e "\twt <worktree-name>: search for worktree names and change to that directory."
+	echo -e "\twt -i: interactively select a worktree using fzf."
+	echo -e "\twt list: list out all the git worktrees."
 	echo -e "\twt names: list out only the git worktree names."
 	echo -e "\twt update: update to the latest release of worktree switcher."
 	echo -e "\twt version: show the CLI version."
@@ -169,10 +185,10 @@ list)
 	worktree_list_names
 	;;
 names)
-  worktree_list_names
-  echo -e '\033[0;31mThe '\''names'\'' option is deprecated and will be removed in future versions.\033[0m' >&2
-  echo -e '\033[0;31mUse '\''list'\'' instead.\033[0m' >&2
-  ;;
+	worktree_list_names
+	echo -e '\033[0;31mThe '\''names'\'' option is deprecated and will be removed in future versions.\033[0m' >&2
+	echo -e '\033[0;31mUse '\''list'\'' instead.\033[0m' >&2
+	;;
 update)
 	update
 	;;
@@ -187,7 +203,15 @@ init)
 	;;
 *)
 	auto_check_update
-	directory=$(git worktree list --porcelain 2> /dev/null | sed -n '/'"${arg:-.}"'/{s/^worktree\s*//p;q}')
+	if [[ "$is_interactive" == true ]]; then
+		directory=$(git worktree list --porcelain |
+		awk '/worktree/ {wt=$2} /branch/ {sub("refs/heads/", "", $2); print wt " [" $2 "]"}' |
+		fzf --query "" --height=10% --no-multi --exit-0 |
+		awk '{print $1}')
+	else
+		directory=$(git worktree list --porcelain | grep -E 'worktree ' | awk '/'"$arg"'/ {print; exit}' | cut -d ' ' -f2-)
+	fi
+
 	;;
 esac
 

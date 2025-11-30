@@ -87,6 +87,10 @@ You can do a text search to change to the worktree directory.
 
 ```bash
 $ wt <worktree-name/search-term>
+
+# Select worktree interactively
+
+$ wt -i
 ```
 
 Go to root worktree directory
