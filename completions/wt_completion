@@ -16,7 +16,7 @@ _wt() {
 		# Use the newline as a separator for the suggestions
 		local IFS=$'\n'
 		local suggestions
-		suggestions=$(compgen -W "$(wt names)" -- "$cur")
+		suggestions=$(compgen -W "$(wt list)" -- "$cur")
 		for word in $suggestions; do
 			COMPREPLY+=("$(printf '%q' "$word")")
 		done

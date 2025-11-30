@@ -7,7 +7,7 @@
 declare -A opts
 
 # Split the worktree names into an array, line-by-line.
-list=("${(@f)$(wt names)}")
+list=("${(@f)$(wt list)}")
 
 # Create associative array with key same as its value
 # Completion keywords are taken as keys of arrays and the possible matches are their values
